@@ -1,0 +1,12 @@
+# Stage 2: Set up the Node.js server
+FROM node:lts-alpine AS server
+WORKDIR /app/server
+
+COPY server/package*.json ./
+RUN npm install --omit=bcrypt
+COPY server/ ./
+RUN npm install bcrypt
+COPY --from=build /app/project/build /app/server/public
+
+EXPOSE 3000 
+CMD ["npm", "start"] 
