@@ -1,0 +1,105 @@
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+.Stats {
+  margin: auto;
+}
+
+.flex-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1.5fr 1fr 1fr;
+  gap: 25px;
+  height: 100vh;
+  width: 95%;
+  margin-top: 40px;
+}
+
+.dataCard {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  height: 250px;
+  
+}
+
+.PositionCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.categoryCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clock {
+  font-size: 2rem;
+  color: #f1c40f;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.my-calendar {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  border: none;
+}
+
+.my-calendar abbr {
+  color: #333;
+  font-size: 1.2em;
+  text-decoration: none;
+}
+
+.my-calendar .react-calendar__tile--active {
+  background: #fff;
+  color: #fff;
+}
+
+.my-calendar-tile {
+  background-color: red;
+  border-radius: 10px;
+  border: none;
+}
+
+
+.flex-container1st {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.item1st {
+  flex: 1;
+}
+
+
+.flex-item1st {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.clock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .flex-container {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .revenueCard {
+    grid-column: 1 / span 2;
+  }
+}
+
