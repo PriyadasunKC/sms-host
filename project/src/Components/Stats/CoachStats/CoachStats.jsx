@@ -131,7 +131,7 @@ const CoachStats = () => {
                     style={{ cursor: "pointer" }}
                     onClick={handleTeamOverview}
                   >
-                    Team Overview
+                    Availability of coaches
                   </span>
                 }
               >

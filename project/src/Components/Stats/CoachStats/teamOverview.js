@@ -48,11 +48,15 @@ const TeamOverview = ({ createdCount, rejectedCount }) => {
         offsetY: 10,
       },
     },
+    dataLabels: {
+      enabled: false,
+    },
     grid: {
       padding: {
         bottom: -80,
       },
     },
+
     responsive: [
       {
         breakpoint: 480,
@@ -66,7 +70,7 @@ const TeamOverview = ({ createdCount, rejectedCount }) => {
         },
       },
     ],
-    labels: ["Available", "All Coaches"],
+    labels: ["No of Availabilities", "All Coaches"],
     colors: ["#2f54eb", "#adc6ff"],
   };
 

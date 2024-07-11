@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./CoachAvailability.css";
 import EOSiderBar from "../CoachSidebar/CoachSidebar";
-import { Layout, Input, Table, message,Button } from "antd";
+import {
+  Layout,
+  Checkbox,
+  Input,
+  Table,
+  message,
+  DatePicker,
+  Button,
+} from "antd";
 import axios from "axios";
-import baseUrl from "../../baseUrl/baseUrl";
+
 const { Content } = Layout;
 
 const dataSource = [
@@ -33,7 +41,7 @@ const dataSource = [
 const CoachAvailability = () => {
   const [eventLocation, setEventLocation] = useState("");
   const [userLocation, setUserLocation] = useState("");
-  const [coachId,setCoachId] = useState([])
+  const [coachId, setCoachId] = useState([]);
   const [createEvent, setCreateEvent] = useState([]);
   const [addedEvents, setAddedEvents] = useState(new Set());
 
@@ -41,18 +49,20 @@ const CoachAvailability = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(1);
-  const [limits , setLimits] = useState(3);
-  
+  const [limits, setLimits] = useState(3);
 
   const fetchData = async (page) => {
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/event/pagination`, { page });
-      console.log("response", response)
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/event/pagination",
+        { page }
+      );
+      console.log("response", response);
       setCreateEvent(response.data.data.events);
       setTotal(response.data.data.totalDocuments);
-      setLimits(response.data.data.limit)
+      setLimits(response.data.data.limit);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -67,129 +77,127 @@ const CoachAvailability = () => {
   const currentUserData = async () => {
     try {
       const res = await axios.get(
-        `${baseUrl}/api/v1/user/getCurrentUser`,
+        "http://localhost:8080/api/v1/user/getCurrentUser",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      setCoachId(res.data.user._id)
-
+      setCoachId(res.data.user._id);
     } catch (error) {
       message.error("Error have inside the Get currentUserData function");
     }
   };
 
+  // GET ALL CREATE EVENT
+  const getAllCreateEvent = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/event/get-all-events"
+      );
 
-  // GET ALL CREATE EVENT 
-const getAllCreateEvent = async () => {
-  try {
-    const response = await axios.get(
-      `${baseUrl}/api/v1/event/get-all-events`
-    );
-
-    if (response.data.success) {
-      // setCreateEvent(response.data.data);
+      if (response.data.success) {
+        // setCreateEvent(response.data.data);
+      }
+    } catch (error) {
+      message.error("Error fetching data");
     }
-  } catch (error) {
-    message.error("Error fetching data");
-  }
-};
+  };
 
-  const handleCheckboxChange = async(id,key, isChecked) => {
+  // Filter userApplicationData based on userRole and Userlocation
+
+  const handleCheckboxChange = async (id, key, isChecked) => {
     // Update your state or data here based on the checkbox state
-    console.log("Event Id",id);
-    console.log("Coach Id",coachId);
+    console.log("Event Id", id);
+    console.log("Coach Id", coachId);
     console.log(isChecked);
 
     try {
-      const availabilityResponse = await axios.post(`${baseUrl}/api/v1/availability/save-coach-availability`,{eventId:id,coachId:coachId,availability:isChecked})
+      const availabilityResponse = await axios.post(
+        "http://localhost:8080/api/v1/availability/save-coach-availability",
+        { eventId: id, coachId: coachId, availability: isChecked }
+      );
       console.log(availabilityResponse.data);
-      
-      if(availabilityResponse.data.success){
-         message.success(availabilityResponse.data.message)
-      }
 
-      else{
-        message.error(availabilityResponse.data.message)
+      if (availabilityResponse.data.success) {
+        message.success(availabilityResponse.data.message);
+      } else {
+        message.error(availabilityResponse.data.message);
       }
-
     } catch (error) {
       message.error("Error adding availability");
     }
-
   };
 
-const handleAvailability = async (id, isChecked) => {
+  const handleAvailability = async (id, isChecked) => {
     try {
-      const availabilityResponse = await axios.post(`${baseUrl}/api/v1/availability/save-coach-availability`,{eventId:id,coachId:coachId,availability:isChecked})
+      const availabilityResponse = await axios.post(
+        "http://localhost:8080/api/v1/availability/save-coach-availability",
+        { eventId: id, coachId: coachId, availability: isChecked }
+      );
       console.log(availabilityResponse.data);
-      
-      if(availabilityResponse.data.success){
-         message.success(availabilityResponse.data.message)
-         setAddedEvents(prev => new Set(prev).add(id));
-      }
 
-      else{
-        message.error(availabilityResponse.data.message)
+      if (availabilityResponse.data.success) {
+        message.success(availabilityResponse.data.message);
+        setAddedEvents((prev) => new Set(prev).add(id));
+      } else {
+        message.error(availabilityResponse.data.message);
       }
-
     } catch (error) {
       message.error("Error adding availability");
     }
   };
 
-
-const removeAvailability = async (id, isChecked) => {
+  const removeAvailability = async (id, isChecked) => {
     console.log(id, isChecked);
     try {
-      const removeResponse = await axios.post(`${baseUrl}/api/v1/availability/save-coach-availability`,{eventId:id,coachId:coachId,availability:isChecked})
+      const removeResponse = await axios.post(
+        "http://localhost:8080/api/v1/availability/save-coach-availability",
+        { eventId: id, coachId: coachId, availability: isChecked }
+      );
       console.log(removeResponse.data);
 
       if (removeResponse.data.success) {
         available = removeResponse.data.setAvailability.availability;
         console.log("current available", available);
         message.success("Availability Remove Successful !");
-        setAddedEvents(prev => {
+        setAddedEvents((prev) => {
           const newSet = new Set(prev);
           newSet.delete(id);
           return newSet;
         });
-
       } else {
         message.error(removeResponse.data.message);
       }
     } catch (error) {
       message.error("Error removing availability");
     }
-  }
+  };
 
-
-  useEffect(()=>{
-    getAllCreateEvent()
-    currentUserData()
-  },[])
-
+  useEffect(() => {
+    getAllCreateEvent();
+    currentUserData();
+  }, []);
 
   //filter data
-  const handleEventLocationSearch = async(value) => {
+  const handleEventLocationSearch = async (value) => {
     console.log("Event Location Searched: ", value);
     try {
-      const searchResponse = await axios.post(`${baseUrl}/api/v1/search/search-location`, { value })
+      const searchResponse = await axios.post(
+        "http://localhost:8080/api/v1/search/search-location",
+        { value }
+      );
       console.log(searchResponse.data.data);
-      setCreateEvent(searchResponse.data.data)
-
+      setCreateEvent(searchResponse.data.data);
     } catch (error) {
       message.error("Error searching event location");
     }
-
   };
 
   const handleDateChange = (date, dateString) => {
     console.log("Date Selected: ", dateString);
   };
-
 
   return (
     <EOSiderBar>
@@ -217,6 +225,12 @@ const removeAvailability = async (id, isChecked) => {
                 onSearch={handleEventLocationSearch}
                 allowClear
               />
+
+              {/* <DatePicker
+                className="searchInputDate"
+                style={{ marginBottom: 8 }}
+                onChange={handleDateChange}
+              /> */}
             </div>
             <Table
               columns={[
@@ -241,7 +255,7 @@ const removeAvailability = async (id, isChecked) => {
                   dataIndex: "eventDate",
                   width: "20%",
                   align: "center",
-                  render: (text, record) => <span>{"2024-02-03"}</span>,
+                  render: (text, record) => <span>{record.eventNewDate}</span>,
                 },
                 {
                   title: "Actions",

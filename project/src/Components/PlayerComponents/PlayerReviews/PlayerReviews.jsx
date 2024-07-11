@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "./PlayerReviews.css";
 import PlayerSideBar from "../PlayerSideBar/PlayerSideBar";
-import { Layout, Input, Table, Image, DatePicker, Rate, message } from "antd";
+import { Layout, Input, Table, Rate, message } from "antd";
 import axios from "axios";
 import baseUrl from "../../baseUrl/baseUrl";
 
@@ -25,51 +25,40 @@ const PlayerReviews = () => {
   const [limits, setLimits] = useState(3);
 
   //GET CURRENT USER DATA
-  const currentUserData = async (page) => {
-    try {
-      const res = await axios.get(`${baseUrl}/api/v1/user/getCurrentUser`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+const currentUserData = async (page) => {
+  try {
+    const res = await axios.get(`${baseUrl}/api/v1/user/getCurrentUser`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-      // Update the state with the current user ID
-      setCurrentPlayerId(res.data.user._id);
+    // Update the state with the current user ID
+    setCurrentPlayerId(res.data.user._id);
 
-      const playerReviewResponse = await axios.post(
-        `${baseUrl}/api/v1/review/get-overall-review`,
-        { page: page }
-      );
-      console.log(playerReviewResponse);
+    const playerReviewResponse = await axios.post(
+      `${baseUrl}/api/v1/review/get-overall-review`,
+      { page: page }
+    );
+    console.log(playerReviewResponse);
 
-      if (playerReviewResponse.data.success) {
-      }
+    if (playerReviewResponse.data.success) {
+      const reviews = playerReviewResponse.data.data.review;
+      // Sort reviews by creation date in descending order
+      reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      // Slice the array to get the latest 20 reviews
+      const latestReviews = reviews.slice(0, 20);
 
-      const newReview = [];
-      const coachId = [];
-
-      for (let i = 0; i < playerReviewResponse.data.data.review.length; i++) {
-        if (
-          playerReviewResponse.data.data.review[i].playerId ===
-          res.data.user._id
-        ) {
-          newReview.push(playerReviewResponse.data.data.review[i]);
-          coachId.push(
-            playerReviewResponse.data.data.review[i].reviewGivenCoachId
-          );
-        }
-      }
-
-      setCurrentPlayerReviews(newReview);
-      setReviewGivenCoachId(coachId);
+      setCurrentPlayerReviews(latestReviews);
       setTotal(playerReviewResponse.data.data.totalReview);
       setLimits(playerReviewResponse.data.data.limit);
 
-      console.log("Current player Review", newReview);
-    } catch (error) {
-      message.error("Error inside the Get currentUserData function");
+      console.log("Current player Review", latestReviews);
     }
-  };
+  } catch (error) {
+    message.error("Error inside the Get currentUserData function");
+  }
+};
 
   useEffect(() => {
     currentUserData(currentPage);

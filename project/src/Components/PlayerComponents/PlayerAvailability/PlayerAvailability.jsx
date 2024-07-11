@@ -3,32 +3,10 @@ import "./PlayerAvailability.css";
 import PlayerSideBar from "../PlayerSideBar/PlayerSideBar";
 import { Layout, Checkbox, Input, Table, message, DatePicker, Button } from "antd";
 import axios from "axios";
+import baseUrl from "../../baseUrl/baseUrl";
 
 const { Content } = Layout;
 
-// const dataSource = [
-//   {
-//     key: "1",
-//     eventLocation: "Galle",
-//     eventName: "Event 1",
-//     eventDate: "2022-01-01",
-//     Actions: "Action 1",
-//   },
-//   {
-//     key: "2",
-//     eventLocation: "Galle",
-//     eventName: "Event 2",
-//     eventDate: "2022-02-01",
-//     Actions: "Action 2",
-//   },
-//   {
-//     key: "3",
-//     eventLocation: "Galle",
-//     eventName: "Event 3",
-//     eventDate: "2022-03-01",
-//     Actions: "Action 3",
-//   },
-// ];
 
 const PlayerAvailability = () => {
   const [eventLocation, setEventLocation] = useState("");
@@ -49,7 +27,7 @@ const PlayerAvailability = () => {
   const currentUserData = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8080/api/v1/user/getCurrentUser",
+        `${baseUrl}/api/v1/user/getCurrentUser`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -70,7 +48,7 @@ const PlayerAvailability = () => {
 
     try {
       const availabilityResponse = await axios.post(
-        "http://localhost:8080/api/v1/player-availability/save-player-availability",
+        `${baseUrl}/api/v1/player-availability/save-player-availability`,
         { eventId: id, playerId: playerId, availability: isChecked }
       );
       console.log(availabilityResponse.data);
@@ -95,7 +73,7 @@ const PlayerAvailability = () => {
 
     try {
       const removeResponse = await axios.post(
-        "http://localhost:8080/api/v1/player-availability/save-player-availability",
+        `${baseUrl}/api/v1/player-availability/save-player-availability`,
         { eventId: id, playerId: playerId, availability: isChecked }
       );
       console.log(removeResponse.data);
@@ -122,7 +100,7 @@ const PlayerAvailability = () => {
   const fetchData = async (page) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/event/pagination",
+        `${baseUrl}/api/v1/event/pagination`,
         { page }
       );
       console.log("response", response);
@@ -152,7 +130,7 @@ const PlayerAvailability = () => {
   const getAllCreateEvent = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/v1/event/get-all-events"
+        `${baseUrl}/api/v1/event/get-all-events`
       );
 
       if (response.data.success) {
@@ -173,7 +151,7 @@ const PlayerAvailability = () => {
   const handleEventLocationSearch = async (value) => {
     console.log("Event Location Searched: ", value);
     try {
-      const searchResponse = await axios.post("http://localhost:8080/api/v1/search/search-location", { value })
+      const searchResponse = await axios.post(`${baseUrl}/api/v1/search/search-location`, { value })
       console.log(searchResponse.data.data);
       setCreateEvent(searchResponse.data.data)
 

@@ -27,9 +27,8 @@ const MyPerformance = () => {
       // Update the state with the current user ID
       setCurrentPlayerId(res.data.user._id);
 
-      const playerReviewResponse = await axios.post(
-        `${baseUrl}/api/v1/review/get-overall-review`,
-        { page: page }
+      const playerReviewResponse = await axios.get(
+       `${baseUrl}/api/v1/review/get-overall-review-without-pagination`
       );
 
       console.log(playerReviewResponse);
@@ -43,7 +42,7 @@ const MyPerformance = () => {
       const fielding = [];
       const coaches = [];
 
-      for (let review of playerReviewResponse.data.data.review) {
+      for (let review of playerReviewResponse.data.data) {
         if (review.playerId === res.data.user._id) {
           batting.push(review.battingReview);
           bowling.push(review.bowlingReview);
@@ -68,17 +67,17 @@ const MyPerformance = () => {
   const series = [
     {
       name: "Batting",
-      data: battingReviews.slice(-10), 
+      data: battingReviews.slice(-10), // Show only the 10 latest data
       color: "#ff7875",
     },
     {
       name: "Bowling",
-      data: bowlingReviews.slice(-10), 
+      data: bowlingReviews.slice(-10), // Show only the 10 latest data
       color: "#95de64",
     },
     {
       name: "Fielding",
-      data: fieldingReviews.slice(-10), 
+      data: fieldingReviews.slice(-10), // Show only the 10 latest data
       color: "#85a5ff",
     },
   ];
@@ -91,7 +90,7 @@ const MyPerformance = () => {
       type: "bar",
       height: 350,
       toolbar: {
-        show: false, 
+        show: false, // Hide the toolbar entirely
       },
     },
     plotOptions: {
@@ -121,7 +120,7 @@ const MyPerformance = () => {
       forceNiceScale: true, // Enable nice scaling
       labels: {
         formatter: (value) => {
-          return `${Math.round((value / 5) * 100)}%`; 
+          return `${Math.round((value / 5) * 100)}%`; // Convert 0-5 to 0-100%
         },
       },
     },

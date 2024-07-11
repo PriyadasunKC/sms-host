@@ -170,7 +170,7 @@ const RefereeStats = () => {
             <div className={adminStatStyles.SfirstCard}>
               <Card></Card>
             </div>
-            <div className={adminStatStyles.SSecondCard}>
+            <div className={adminStatStyles.SSecondCard} style={{visibility: "hidden"}}>
               <Card
                 bordered={false}
                 className={adminStatStyles.card5}
